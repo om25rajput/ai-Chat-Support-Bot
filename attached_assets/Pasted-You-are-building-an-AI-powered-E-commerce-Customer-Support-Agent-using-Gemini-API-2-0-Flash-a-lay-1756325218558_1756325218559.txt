@@ -1,0 +1,210 @@
+You are building an AI-powered *E-commerce Customer Support Agent* using Gemini API 2.0 Flash, a layered Retrieval-Augmented Generation (RAG) system, and private deployment.
+
+## System & Design Requirements:
+
+### 1. Conversation Structure
+- *Step 1:* On startup, chatbot displays *default FAQs grouped by categories*:
+   - Orders
+   - Payments
+   - Returns & Refunds
+   - Cancellations
+   - Membership / Prime
+   - Delivery
+   - Warranty & Repairs
+   - Gift Cards & Coupons
+   - Account & Security
+   - International Shipping
+- *Step 2:* If user clicks an FAQ → return stored answer instantly.
+- *Step 3:* If user types a query:
+  - Convert query into embedding → compare with Knowledge Base (KB).
+  - If match found → return KB answer.
+  - If no match → send query to Gemini API with KB context as augmentation.
+
+---
+
+### 2. RAG (Retrieval-Augmented Generation) Layer
+- Create a *Knowledge Base of 50+ FAQ entries* across categories.
+- Each FAQ stored as: {question, answer, category}.
+- RAG Process:
+  1. Convert KB into embeddings and store in a vector DB.
+  2. Convert user query into an embedding.
+  3. Compute similarity (cosine similarity).
+  4. If similarity ≥ threshold → return KB entry.
+  5. If no strong match → fallback to Gemini with retrieved top-3 FAQs as context.
+- Optimization: Ensure KB answers are *short, factual (1–2 sentences)* → minimizes token usage.
+
+---
+
+### 3. LLM (Gemini API 2.0 Flash) Role
+- Gemini is used as a *fallback and contextual generator*:
+  - If KB doesn’t cover query, Gemini generates a response.
+  - Prompt Gemini with:  
+    
+    User query: {query}  
+    Retrieved KB entries: {top 3}  
+    Instructions: Answer concisely in under 50 tokens. If unsure, say:  
+    "Please contact customer care for more details."
+    
+- This ensures *minimal token usage* while maintaining coverage for unstructured questions.
+
+---
+
+### 4. Deployment Requirements
+- *Private Access*: Deploy on a cloud platform (e.g., Vercel, Streamlit Cloud, Firebase).  
+   - Only users with a shared link can access.  
+   - No public search indexing.  
+- *Rate Limiting*:  
+   - Add middleware to restrict API calls (e.g., max 25 per day per user).  
+   - If exceeded → bot replies:  
+     "Daily free usage limit reached. Please try again tomorrow."
+- *Storage*:  
+   - KB dataset stored locally or in Firestore / Supabase.  
+   - Embeddings precomputed once at setup.
+
+---
+
+### 5. Example KB Preview (50 entries)
+(Orders, Payments, Returns, Delivery, etc. — [same as earlier preview])
+
+---
+
+You are building an AI-powered *E-commerce Customer Support Agent* using Gemini API 2.0 Flash with a layered Retrieval-Augmented Generation (RAG) system.
+
+## System & Design Requirements:
+
+### 1. Default FAQs & Categories
+When the chatbot is opened, it should display *default FAQs grouped by category*:
+- Orders
+- Payments
+- Returns & Refunds
+- Cancellations
+- Membership / Prime
+- Delivery
+- Warranty & Repairs
+- Gift Cards & Coupons
+- Account & Security
+- International Shipping
+
+Each category should contain *5+ FAQ entries*. Users should be able to expand a category to view questions/answers.  
+Include an *"Other" option* that allows the user to bypass FAQs → directly trigger RAG search + Gemini fallback.
+
+---
+
+### 2. RAG Knowledge Base
+- Generate a *knowledge base of at least 50–70 FAQ entries* automatically, distributed across the above categories.
+- Format: list/JSON/dataset so it can be embedded for semantic similarity search.
+- Each entry must be concise (1–2 sentences) but specific and realistic, grounded in typical e-commerce policies.
+- Ensure wording is diverse so that embeddings capture semantic meaning.
+- Example entries:
+  - Orders: "Tracking details are updated within 12 hours of dispatch."
+  - Payments: "If money is deducted but the order isn’t placed, refunds are auto-initiated within 3–5 days."
+  - Returns: "Fashion items are eligible for return within 7 days of delivery."
+  - Warranty: "Electronics carry a 1-year manufacturer warranty unless otherwise mentioned."
+  - Security: "Two-factor authentication is required for suspicious login attempts."
+
+---
+
+### 3. Conversation Flow
+- *Start:* Show default FAQ categories with sample questions.
+- *User clicks FAQ:* Return the stored answer immediately.
+- *User types query:*  
+  - Step 1: Convert query into embedding → compare with KB embeddings.  
+  - Step 2: If similarity ≥ threshold, return KB answer.  
+  - Step 3: If no relevant KB entry, fallback to Gemini API.  
+- Ensure answers use *minimum tokens possible* while staying factual.
+
+---
+
+### 4. Deployment & Access Control
+- Deploy privately (only users with the link can access).
+- Add an *API rate limiter* (e.g., max 25 requests per session/day).  
+- If exceeded, bot replies: "Daily free usage limit reached. Please try again tomorrow."
+
+---
+
+### 5. RAG Pipeline Explanation (for clarity during interview)
+- Step 1: Convert KB FAQs into embeddings (vector database).  
+- Step 2: Convert user query into an embedding.  
+- Step 3: Compare using cosine similarity.  
+- Step 4: If relevant match found, return KB entry.  
+- Step 5: Otherwise, augment Gemini prompt with KB context and generate an answer.  
+
+---
+
+### 6. Knowledge Base Dataset (Example Preview – 50 Entries)
+
+*Orders*
+1. Orders placed before 6 PM are processed the same day.  
+2. Same-day delivery is available only in select metro cities.  
+3. Sellers must dispatch orders within 48 hours of purchase.  
+4. Tracking details appear within 12 hours after dispatch.  
+5. Multiple items in one order may ship separately.  
+
+*Payments*
+6. We accept Credit/Debit Cards, UPI, Net Banking, and Wallets.  
+7. Payment failures usually resolve within 30 minutes.  
+8. If money is deducted but order not confirmed, refund auto-initiates in 3–5 days.  
+9. EMI is available on purchases above ₹3000 with select banks.  
+10. Cash on Delivery is unavailable for bulk or fragile items.  
+
+*Returns & Refunds*
+11. Electronics have a 10-day return window.  
+12. Fashion items have a 7-day return window.  
+13. Groceries must be returned within 24 hours.  
+14. Refunds to cards/UPI take 3–5 days.  
+15. Wallet refunds are instant after approval.  
+
+*Cancellations*
+16. Orders can be cancelled before dispatch.  
+17. Once dispatched, cancellations are not possible.  
+18. Partial cancellations are allowed for multi-item orders.  
+19. Prepaid cancellations refund automatically.  
+20. COD orders cancelled before dispatch incur no charge.  
+
+*Membership / Prime*
+21. Prime members get free one-day delivery on eligible items.  
+22. Prime offers early access to sales.  
+23. Prime includes ad-free music and exclusive video content.  
+24. Membership renewal reminders are sent 7 days before expiry.  
+25. Prime trial can be activated only once per account.  
+
+*Delivery*
+26. Standard delivery time is 2–5 business days.  
+27. Festive season deliveries may face delays.  
+28. Customers can reschedule delivery via the app.  
+29. Delivery attempts are made up to 3 times.  
+30. If delivery fails after 3 attempts, item is returned to seller.  
+
+*Warranty & Repairs*
+31. Electronics usually carry a 1-year manufacturer warranty.  
+32. Warranty does not cover physical damage.  
+33. Repair requests can be raised from the "My Orders" section.  
+34. Extended warranties can be purchased during checkout.  
+35. Repairs are serviced only at authorized centers.  
+
+*Gift Cards & Coupons*
+36. Gift cards are valid for 1 year from purchase.  
+37. Coupons cannot be clubbed with other offers.  
+38. Gift cards are non-refundable once issued.  
+39. Coupons are valid only on eligible products.  
+40. Expired coupons cannot be reactivated.  
+
+*Account & Security*
+41. Users can update phone numbers from profile settings.  
+42. Two-factor authentication is enabled for high-value orders.  
+43. Suspicious login attempts trigger an OTP verification.  
+44. Accounts can be permanently deleted from settings.  
+45. Password reset links expire in 15 minutes.  
+
+*International Shipping*
+46. Only select items are eligible for international shipping.  
+47. Customs duties must be borne by the customer.  
+48. Delivery timelines vary between 10–20 business days.  
+49. International orders cannot be paid via COD.  
+50. Returns are not accepted for international shipments.  
+
+---
+
+### 7. Optimization
+- Use shortest factual responses to minimize token usage.  
+- Embed all FAQ entries in advance for efficient RAG retrieval.
