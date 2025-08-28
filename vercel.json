@@ -1,14 +1,14 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "client/vite.config.ts", "use": "@vercel/static-build" },
-    { "src": "server/api/**/*.ts", "use": "@vercel/node" }
-  ],
   "routes": [
-    { "src": "/api/chat", "dest": "/server/api/chat.ts" },
-    { "src": "/api/faq/categories", "dest": "/server/api/faq/categories.ts" },
-    { "src": "/api/faq/select", "dest": "/server/api/faq/select.ts" },
-    { "src": "/api/kb/stats", "dest": "/server/api/kb/stats.ts" },
-    { "src": "/(.*)", "dest": "/client/dist/$1" }
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/api/$1.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/dist/index.html"
+    }
   ]
 }
+
