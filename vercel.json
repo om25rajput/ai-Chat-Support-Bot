@@ -1,40 +1,13 @@
 {
-  "version": 2,
-
-  "functions": {
-    "server/api/chat.ts": {
-      "runtime": "@vercel/node"
-    },
-    "server/api/faq/categories.ts": {
-      "runtime": "@vercel/node"
-    },
-    "server/api/faq/select.ts": {
-      "runtime": "@vercel/node"
-    },
-    "server/api/kb/stats.ts": {
-      "runtime": "@vercel/node"
-    }
-  },
-  "routes": [
-    {
-      "src": "/api/chat",
-      "dest": "/server/api/chat"
-    },
-    {
-      "src": "/api/faq/categories",
-      "dest": "/server/api/faq/categories"
-    },
-    {
-      "src": "/api/faq/select",
-      "dest": "/server/api/faq/select"
-    },
-    {
-      "src": "/api/kb/stats",
-      "dest": "/server/api/kb/stats"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/client/dist/$1"
-    }
-  ]
+"version": 2,
+"functions": {
+"server/api/**/.ts": { "runtime": "nodejs18.x" }
+},
+"routes": [
+{ "src": "/api/chat", "dest": "/server/api/chat" },
+{ "src": "/api/faq/categories", "dest": "/server/api/faq/categories" },
+{ "src": "/api/faq/select", "dest": "/server/api/faq/select" },
+{ "src": "/api/kb/stats", "dest": "/server/api/kb/stats" },
+{ "src": "/(.)", "dest": "/client/dist/$1" }
+]
 }
