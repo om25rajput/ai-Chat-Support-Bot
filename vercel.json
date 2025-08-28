@@ -37,3 +37,4 @@
       "dest": "/client/dist/$1"
     }
   ]
+}
