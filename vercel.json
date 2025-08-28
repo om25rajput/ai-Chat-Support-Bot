@@ -1,13 +1,13 @@
 {
-"version": 2,
-"functions": {
-"server/api/**/.ts": { "runtime": "nodejs18.x" }
-},
-"routes": [
-{ "src": "/api/chat", "dest": "/server/api/chat" },
-{ "src": "/api/faq/categories", "dest": "/server/api/faq/categories" },
-{ "src": "/api/faq/select", "dest": "/server/api/faq/select" },
-{ "src": "/api/kb/stats", "dest": "/server/api/kb/stats" },
-{ "src": "/(.)", "dest": "/client/dist/$1" }
-]
+  "version": 2,
+  "functions": {
+    "server/api/**/*.ts": { "runtime": "@vercel/node@2.0.0" }
+  },
+  "routes": [
+    { "src": "/api/chat", "dest": "/server/api/chat" },
+    { "src": "/api/faq/categories", "dest": "/server/api/faq/categories" },
+    { "src": "/api/faq/select", "dest": "/server/api/faq/select" },
+    { "src": "/api/kb/stats", "dest": "/server/api/kb/stats" },
+    { "src": "/(.)", "dest": "/client/dist/$1" }
+  ]
 }
